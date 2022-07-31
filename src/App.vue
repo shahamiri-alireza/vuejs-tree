@@ -1,5 +1,5 @@
 <template>
-	<Tree :data="testData" />
+	<Tree :data="testData2" />
 </template>
 
 <script>
@@ -38,19 +38,35 @@
 					{
 						name: 'P2'
 					}
+				],
+				testData2: [
+					{
+						name: 'حسابداری',
+						children: [
+							{
+								name: 'سند',
+								children: [
+									{
+										name: 'صدور سند'
+									},
+									{
+										name: 'لیست اسناد'
+									},
+								]
+							},
+							{
+								name: 'درخت حسابها'
+							},
+							{
+								name: 'حسابهای شناور'
+							}
+						]
+					},
+					{
+						name: 'خزانه داری'
+					}
 				]
 			}
 		},
 	}
 </script>
-
-<style>
-	#app {
-		font-family: Avenir, Helvetica, Arial, sans-serif;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-		text-align: center;
-		color: #2c3e50;
-		margin-top: 60px;
-	}
-</style>
