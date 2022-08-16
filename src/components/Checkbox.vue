@@ -1,5 +1,5 @@
 <template>
-	<div class="checkbox" :class="{'checked':state !== 'unchecked'}" @click="emitClick">
+	<div class="checkbox" :class="{'checked':state !== 'unchecked'}" @click="checkboxClicked">
 		<img v-if="state !== 'unchecked'" :src="require(`../assets/icons/${state}.svg`)" alt="">
 	</div>
 </template>
@@ -15,14 +15,13 @@
 		},
 		data() {
 			return {
-				state: 'unchecked', // checked unChecked halfChecked
+				state: 'unchecked', // checked unchecked halfChecked
 			}
 		},
 		watch: {
       value:{
         immediate:true,
         handler(val){
-          console.log(val)
           this.state = val
         }
 
@@ -35,9 +34,19 @@
 		mounted() {
 		},
 		methods: {
-      emitClick(){
-        // this.$emit('click')
-      }
+			checkboxClicked(){
+				switch (this.state) {
+					case 'checked' :
+					case 'halfChecked':
+						this.state = 'unchecked'
+						break;
+					case 'unchecked':
+						this.state = 'checked'
+						break
+				}
+
+				this.$emit('checkboxStateChanged', this.state === 'checked' ? true : false)
+			}
 		}
 	}
 </script>

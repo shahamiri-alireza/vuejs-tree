@@ -1,6 +1,6 @@
 <template>
 	<ul class="main-tree" :dir="settings.treeDirection">
-		<TreeItem v-for="item in data" :key="item.name" :data="item" />
+		<TreeItem v-for="item in data" :key="item.na" :data="item" />
 	</ul>
 </template>
 
@@ -25,6 +25,8 @@
 					this.settings = _.merge(this.settings, val)
 				}
 			}
+		},
+		methods: {
 		},
 		data() {
 			return {
