@@ -26,7 +26,27 @@
 				}
 			}
 		},
+		created() {
+			this.treeInit()
+		},
 		methods: {
+			treeInit() {
+				this.addOrCheckStateFieldtoData(this.modelValue, false)
+			},
+			addOrCheckStateFieldtoData(dataList, parentState = false) {
+				for (let i = 0; i < dataList.length; i++) {
+					if (parentState == true) {
+						dataList[i].state = { isChecked: true }
+					}
+					else if (!dataList[i].state) {
+						dataList[i].state = { isChecked: false }
+					}
+
+
+					if (dataList[i].children?.length > 0)
+						this.addOrCheckStateFieldtoData(dataList[i].children, dataList[i].state.isChecked)
+				}
+			}
 		},
 		data() {
 			return {

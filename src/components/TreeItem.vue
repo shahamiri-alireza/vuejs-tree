@@ -39,6 +39,18 @@
 				}
 			},
 		},
+		created() {
+			this.halfChecked = false
+			if (this.modelValue.children && this.modelValue.children.length > 0) {
+
+				const halfCheckedOrigin = this.modelValue.children[0].state.isChecked
+				for (let i = 0; i < this.modelValue.children.length; i++) {
+					if (this.modelValue.children[i].state.isChecked !== halfCheckedOrigin) {
+						this.halfChecked = true
+					}
+				}
+			}
+		},
 		methods: {
 			treeItemDataChanged(val) {
 				this.halfChecked = false
