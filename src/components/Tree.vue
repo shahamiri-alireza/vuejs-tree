@@ -1,6 +1,6 @@
 <template>
 	<ul class="main-tree" :dir="settings.treeDirection">
-		<TreeItem v-for="item in data" :key="item.na" :data="item" />
+		<TreeItem v-for="item in modelValue" :key="item.na" :modelValue="item" @update:modelValue="item = $event" />
 	</ul>
 </template>
 
@@ -14,14 +14,14 @@
 			TreeItem,
 		},
 		props: {
-			data: { type: Array, default: [] },
+			modelValue: { type: Array, default: [] },
 			options: { type: Object }
 		},
-		watch:{
-			options:{
-				deep:true,
-				immediate:true,
-				handler(val){
+		watch: {
+			options: {
+				deep: true,
+				immediate: true,
+				handler(val) {
 					this.settings = _.merge(this.settings, val)
 				}
 			}

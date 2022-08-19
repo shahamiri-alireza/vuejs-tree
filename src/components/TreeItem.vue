@@ -1,9 +1,9 @@
 <template>
 	<li class="tree-item">
-		<Checkbox :value="checkboxState" @checkboxStateChanged="val => checkboxStateChanged(val)" />
-		<span @click="toggleCollapse">{{ data.name }}</span>
-		<ul class="tree-list" v-if="data.children" ref="treeList">
-			<TreeItem v-for="item in data.children" :key="item.name" :data="item" @dataChanged="val => treeItemDataChanged(val)" />
+		<Checkbox :modelValue="checkboxState" @update:modelValue="val => checkboxStateChanged(val)" />
+		<span @click="toggleCollapse">{{ modelValue.name }}</span>
+		<ul class="tree-list" v-if="modelValue.children" ref="treeList">
+			<TreeItem v-for="item in modelValue.children" :key="item.name" :modelValue="item" @update:modelValue="val => treeItemDataChanged(val)" />
 		</ul>
 	</li>
 </template>
@@ -15,7 +15,7 @@
 			Checkbox
 		},
 		props: {
-			data: {},
+			modelValue: {},
 			options: { type: Object }
 		},
 		data() {
@@ -26,11 +26,11 @@
 		},
 		computed: {
 			checkboxState() {
-				if (this.data.state.isChecked) {
+				if (this.modelValue.state.isChecked) {
 					return 'checked'
 				}
-				else if (this.data.state.isChecked === false) {
-					if (this.data.state.isHalfChecked) {
+				else if (this.modelValue.state.isChecked === false) {
+					if (this.modelValue.state.isHalfChecked) {
 						return 'halfChecked'
 					}
 					else {
@@ -40,21 +40,33 @@
 			},
 		},
 		methods: {
-			treeItemDataChanged(val){
-				if (val.state.isChecked === false){
-					this.data.state.isChecked = false
+			treeItemDataChanged(val) {
+				// debugger
+				if (this.modelValue.children && this.modelValue.children.length > 0) {
+					let dataState = true
+					for (let i = 0; i < this.modelValue.children.length; i++) {
+						if (this.modelValue.children[i].state.isChecked === false) {
+							dataState = false
+						}
+					}
+					if (val.state.isChecked === false) {
+						dataState = false
+					}
+					let clonedData = this.modelValue
+					clonedData.state.isChecked = dataState
+					this.emit(clonedData)
 				}
-				
-
 				this.emit(val)
+				// console.log(this.data)
+
+
 			},
 			checkboxStateChanged(val) {
-				let clonedData = this.data
+				let clonedData = this.modelValue
 
 				const rec = (items, state) => {
-					// if (!item.children) return
 					items.forEach(child => {
-						child.state = state
+						child.state.isChecked = state
 						if (child.children) {
 							child.children = rec(child.children, state)
 						}
@@ -63,53 +75,19 @@
 				}
 
 				if (clonedData.children) {
-					clonedData.children = rec(clonedData.children, { isChecked: val })
+					clonedData.children = rec(clonedData.children, val)
 				}
 
-				clonedData.state.isChecked = true
+				clonedData.state.isChecked = val
 
 				this.emit(clonedData)
-
 			},
 			emit(data) {
-				this.$emit('dataChanged', data)
+				this.$emit('update:modelValue', data)
 			},
 			toggleCollapse() {
-				if (this.data.children)
+				if (this.modelValue.children)
 					this.$refs.treeList.classList.toggle('collapse')
-			},
-			checkboxClicked() {
-				return
-				const rec = (item, state) => {
-					// if (!item.children) return
-					item.children.forEach(child => {
-						child.state = state
-						if (child.children) {
-							rec(child, state)
-						}
-					})
-					return item
-				}
-				// let a = this.data
-				// console.log(this.data)
-				// return
-				if (this.state.isChecked) {
-					this.state.isChecked = false
-				}
-				else {
-					this.state.isChecked = true
-					// this.data.children.map(child => child.state.isChecked = true)
-				}
-				if (this.data.children) {
-					rec(this.data, this.state)
-					// this.data.state = this.state
-				}
-				this.$emit('dataChanged',)
-				// this.state.isHalfChecked = false
-				// this.data.state = this.state
-
-				this.checkboxState = this.updateCheckboxState()
-				// console.log(this.updateCheckboxState())
 			},
 		}
 	}

@@ -9,7 +9,7 @@
 	export default {
 		name: 'Checkbox',
 		props: {
-			value: {},
+			modelValue: {},
 			options: {},
 			isHalf: { default: false, type: Boolean }
 		},
@@ -19,7 +19,7 @@
 			}
 		},
 		watch: {
-      value:{
+      modelValue:{
         immediate:true,
         handler(val){
           this.state = val
@@ -28,8 +28,8 @@
       }
 		},
 		created() {
-			if (this.value)
-				this.state = this.value
+			if (this.modelValue)
+				this.state = this.modelValue
 		},
 		mounted() {
 		},
@@ -45,7 +45,7 @@
 						break
 				}
 
-				this.$emit('checkboxStateChanged', this.state === 'checked' ? true : false)
+				this.$emit('update:modelValue', this.state === 'checked' ? true : false)
 			}
 		}
 	}

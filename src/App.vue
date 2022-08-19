@@ -1,5 +1,5 @@
 <template>
-	<Tree :data="testData2" />
+	<Tree :modelValue="testData2" />
 	<button @click="test1()">Salam</button>
 </template>
 
