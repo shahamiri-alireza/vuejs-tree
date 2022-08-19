@@ -20,8 +20,8 @@
 		},
 		data() {
 			return {
-				state: { isChecked: false, isHalfChecked: false },
-				// checkboxState: 'unchecked',
+				state: { isChecked: false },
+				halfChecked: false
 			}
 		},
 		computed: {
@@ -30,7 +30,7 @@
 					return 'checked'
 				}
 				else if (this.modelValue.state.isChecked === false) {
-					if (this.modelValue.state.isHalfChecked) {
+					if (this.halfChecked) {
 						return 'halfChecked'
 					}
 					else {
@@ -41,12 +41,23 @@
 		},
 		methods: {
 			treeItemDataChanged(val) {
-				// debugger
+				this.halfChecked = false
 				if (this.modelValue.children && this.modelValue.children.length > 0) {
 					let dataState = true
+					const halfCheckedOrigin = this.modelValue.children[0].state.isChecked
+					let valDifferenceCount = 0
 					for (let i = 0; i < this.modelValue.children.length; i++) {
 						if (this.modelValue.children[i].state.isChecked === false) {
 							dataState = false
+						}
+
+
+						if (val.state.isChecked !== this.modelValue.children[i].state.isChecked) {
+							valDifferenceCount++
+						}
+
+						if (this.modelValue.children[i].state.isChecked !== halfCheckedOrigin || valDifferenceCount > 1) {
+							this.halfChecked = true
 						}
 					}
 					if (val.state.isChecked === false) {
@@ -57,8 +68,6 @@
 					this.emit(clonedData)
 				}
 				this.emit(val)
-				// console.log(this.data)
-
 
 			},
 			checkboxStateChanged(val) {

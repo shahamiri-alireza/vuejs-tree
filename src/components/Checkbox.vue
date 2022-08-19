@@ -19,13 +19,13 @@
 			}
 		},
 		watch: {
-      modelValue:{
-        immediate:true,
-        handler(val){
-          this.state = val
-        }
+			modelValue: {
+				immediate: true,
+				handler(val) {
+					this.state = val
+				}
 
-      }
+			}
 		},
 		created() {
 			if (this.modelValue)
@@ -34,13 +34,13 @@
 		mounted() {
 		},
 		methods: {
-			checkboxClicked(){
+			checkboxClicked() {
 				switch (this.state) {
-					case 'checked' :
-					case 'halfChecked':
+					case 'checked':
 						this.state = 'unchecked'
-						break;
+						break
 					case 'unchecked':
+					case 'halfChecked':
 						this.state = 'checked'
 						break
 				}
