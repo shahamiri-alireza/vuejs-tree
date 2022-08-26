@@ -1,6 +1,7 @@
 <template>
 	<div class="checkbox" :class="{'checked':state !== 'unchecked'}" @click="checkboxClicked">
-		<img v-if="state !== 'unchecked'" :src="require(`../assets/icons/${state}.svg`)" alt="">
+		<img v-if="state === 'checked'" src="../assets/icons/checked.svg" alt="">
+		<img v-else-if="state === 'halfChecked'" src="../assets/icons/halfChecked.svg" alt="">
 	</div>
 </template>
 
