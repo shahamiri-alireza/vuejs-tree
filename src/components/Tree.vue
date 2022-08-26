@@ -1,6 +1,6 @@
 <template>
 	<ul class="main-tree" :dir="settings.treeDirection">
-		<TreeItem v-for="item in modelValue" :key="item.na" :modelValue="item" @update:modelValue="item = $event" />
+		<TreeItem v-for="item in modelValue" :fields="settings.customFields" :key="item[settings.customFields.text]" :modelValue="item" @update:modelValue="item = $event" />
 	</ul>
 </template>
 
@@ -36,15 +36,15 @@
 			addOrCheckStateFieldtoData(dataList, parentState = false) {
 				for (let i = 0; i < dataList.length; i++) {
 					if (parentState == true) {
-						dataList[i].state = { isChecked: true }
+						dataList[i][this.settings.customFields.state] = { isChecked: true }
 					}
-					else if (!dataList[i].state) {
-						dataList[i].state = { isChecked: false }
+					else if (!dataList[i][this.settings.customFields.state]) {
+						dataList[i][this.settings.customFields.state] = { isChecked: false }
 					}
 
 
-					if (dataList[i].children?.length > 0)
-						this.addOrCheckStateFieldtoData(dataList[i].children, dataList[i].state.isChecked)
+					if (dataList[i][this.settings.customFields.children]?.length > 0)
+						this.addOrCheckStateFieldtoData(dataList[i][this.settings.customFields.children], dataList[i][this.settings.customFields.state].isChecked)
 				}
 			}
 		},
@@ -52,6 +52,11 @@
 			return {
 				settings: {
 					treeDirection: 'rtl', // ltr | rtl
+					customFields: {
+						text: 'esm',
+						children: 'children',
+						state: 'state'
+					}
 				}
 			}
 		},

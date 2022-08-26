@@ -1,5 +1,5 @@
 <template>
-	<Tree :modelValue="testData2" />
+	<Tree :modelValue="testData2" :options="testOptions" />
 	<button @click="test1()">Salam</button>
 </template>
 
@@ -7,64 +7,69 @@
 	import Tree from './components/Tree.vue'
 
 	export default {
-		name: 'App',
+		text: 'App',
 		components: {
 			Tree,
 		},
 		data() {
 			return {
+				testOptions: {
+					customFields: {
+						text: 'text'
+					}
+				},
 				testData: [
 					{
-						name: 'P1',
+						text: 'P1',
 						children: [
 							{
-								name: 'C11',
+								text: 'C11',
 								children: [
 									{
-										name: 'C21',
+										text: 'C21',
 									},
 									{
-										name: 'C22',
+										text: 'C22',
 									},
 								]
 							},
 							{
-								name: 'C12',
+								text: 'C12',
 							},
 							{
-								name: 'C13',
+								text: 'C13',
 							}
 						]
 					},
 					{
-						name: 'P2',
+						text: 'P2',
 					}
 				],
 				testData2: [
 					{
-						name: 'حسابداری',
+						text: 'حسابداری',
 						children: [
 							{
-								name: 'سند',
+								text: 'سند',
 								children: [
 									{
-										name: 'صدور سند',
+										text: 'صدور سند',
 									},
 									{
-										name: 'لیست اسناد',
+										text: 'لیست اسناد',
 									},
 								]
 							},
 							{
-								name: 'درخت حسابها',
+								text: 'درخت حسابها',
 							},
 							{
-								name: 'حسابهای شناور',
+								text: 'حسابهای شناور',
 							}
 						]
 					},
 					{
-						name: 'خزانه داری',
+						text: 'خزانه داری',
 					}
 				]
 			}
