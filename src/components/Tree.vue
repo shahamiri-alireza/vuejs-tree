@@ -1,6 +1,6 @@
 <template>
 	<ul class="main-tree" :dir="settings.treeDirection">
-		<TreeItem v-for="item in modelValue" :fields="settings.customFields" :key="item[settings.customFields.text]" :modelValue="item" @update:modelValue="item = $event" />
+		<TreeItem v-for="item in modelValue" :checkboxOptions="settings.checkboxOptions" :fields="settings.customFields" :key="item[settings.customFields.text]" :modelValue="item" @update:modelValue="item = $event" />
 	</ul>
 </template>
 
@@ -56,6 +56,10 @@
 						text: 'esm',
 						children: 'children',
 						state: 'state'
+					},
+					checkboxOptions: {
+						checkedColor: '#4646ff',
+						unCheckedColor: 'white'
 					}
 				}
 			}

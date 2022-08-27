@@ -1,7 +1,7 @@
 <template>
-	<div class="checkbox" :class="{'checked':state !== 'unchecked'}" @click="checkboxClicked">
-		<img v-if="state === 'checked'" src="../assets/icons/checked.svg" alt="">
-		<img v-else-if="state === 'halfChecked'" src="../assets/icons/halfChecked.svg" alt="">
+	<div class="checkbox" :class="{'checked':state !== 'unchecked'}" :style="{'background-color': state !== 'unchecked' ? settings.checkedColor : settings.unCheckedColor}" @click="checkboxClicked">
+		<img v-show="state === 'checked'" src="../assets/icons/checked.svg" alt="">
+		<img v-show="state === 'halfChecked'" src="../assets/icons/halfChecked.svg" alt="">
 	</div>
 </template>
 
@@ -16,6 +16,10 @@
 		},
 		data() {
 			return {
+				settings: {
+					checkedColor: '#4646ff',
+					unCheckedColor: 'white'
+				},
 				state: 'unchecked', // checked unchecked halfChecked
 			}
 		},
@@ -25,7 +29,13 @@
 				handler(val) {
 					this.state = val
 				}
-
+			},
+			options: {
+				immediate: true,
+				deep: true,
+				handler(val) {
+					this.settings = _.merge(this.settings, val)
+				}
 			}
 		},
 		created() {
@@ -62,10 +72,6 @@
 		display: inline-block;
 		margin: 0px 4px;
 		background-color: white;
-	}
-
-	.checked {
-		background-color: rgb(70, 70, 255);
 	}
 
 	.checkbox img {

@@ -1,9 +1,11 @@
 <template>
 	<li class="tree-item">
-		<Checkbox :modelValue="checkboxState" @update:modelValue="val => checkboxStateChanged(val)" />
-		<span @click="toggleCollapse">{{ modelValue[this.text] }}</span>
+		<div class="tree-item-content">
+			<Checkbox :options="checkboxOptions" class="tree-item-checkbox" :modelValue="checkboxState" @update:modelValue="val => checkboxStateChanged(val)" />
+			<span class="tree-item-text" @click="toggleCollapse">{{ modelValue[this.text] }}</span>
+		</div>
 		<ul class="tree-list" v-if="modelValue[this.children]" ref="treeList">
-			<TreeItem v-for="item in modelValue[this.children]" :key="item[this.text]" :fields="this.fields" :modelValue="item" @update:modelValue="val => treeItemDataChanged(val)" />
+			<TreeItem v-for="item in modelValue[this.children]" :key="item[this.text]" :checkboxOptions="checkboxOptions" :fields="this.fields" :modelValue="item" @update:modelValue="val => treeItemDataChanged(val)" />
 		</ul>
 	</li>
 </template>
@@ -16,7 +18,8 @@
 		},
 		props: {
 			modelValue: {},
-			fields: { type: Object }
+			fields: { type: Object },
+			checkboxOptions: {}
 		},
 		data() {
 			return {
@@ -123,6 +126,32 @@
 </script>
 
 <style>
+	.tree-item {
+		white-space: nowrap;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		box-sizing: border-box;
+	}
+
+	.tree-item-content {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		width: 100%;
+		box-sizing: border-box;
+	}
+	.tree-item-text{
+		flex: 1;
+		height: 100%;
+		display: block;
+		overflow: auto;
+		}
+
+	.tree-item-content:hover {
+		background-color: #f6f8fb;
+	}
+
 	.tree-list {
 		display: none;
 	}
