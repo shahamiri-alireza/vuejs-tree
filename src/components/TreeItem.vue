@@ -140,13 +140,14 @@
 		cursor: pointer;
 		width: 100%;
 		box-sizing: border-box;
+		user-select: none;
 	}
-	.tree-item-text{
+	.tree-item-text {
 		flex: 1;
 		height: 100%;
 		display: block;
 		overflow: auto;
-		}
+	}
 
 	.tree-item-content:hover {
 		background-color: #f6f8fb;
@@ -154,8 +155,10 @@
 
 	.tree-list {
 		display: none;
+		padding: 0px 22px;
 	}
 	.collapse {
 		display: block;
 	}
+
 </style>
