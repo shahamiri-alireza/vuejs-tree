@@ -1,10 +1,11 @@
 <template>
 	<li class="tree-item">
 		<div class="tree-item-content">
+			<img @click="toggleCollapse" v-if="modelValue[this.children]" class="chevron-icon" :class="{'rotate': isCollapsed}" src="../assets/icons/chevron.svg" alt="">
 			<Checkbox :options="checkboxOptions" class="tree-item-checkbox" :modelValue="checkboxState" @update:modelValue="val => checkboxStateChanged(val)" />
 			<span class="tree-item-text" @click="toggleCollapse">{{ modelValue[this.text] }}</span>
 		</div>
-		<ul class="tree-list" v-if="modelValue[this.children]" ref="treeList">
+		<ul class="tree-list" :class="{'collapse': isCollapsed}" v-if="modelValue[this.children]" ref="treeList">
 			<TreeItem v-for="item in modelValue[this.children]" :key="item[this.text]" :checkboxOptions="checkboxOptions" :fields="this.fields" :modelValue="item" @update:modelValue="val => treeItemDataChanged(val)" />
 		</ul>
 	</li>
@@ -23,7 +24,8 @@
 		},
 		data() {
 			return {
-				halfChecked: false
+				halfChecked: false,
+				isCollapsed: false,
 			}
 		},
 		computed: {
@@ -94,6 +96,7 @@
 
 			},
 			checkboxStateChanged(val) {
+				this.halfChecked = false
 				let clonedData = this.modelValue
 
 				const rec = (items, state) => {
@@ -118,8 +121,9 @@
 				this.$emit('update:modelValue', data)
 			},
 			toggleCollapse() {
-				if (this.modelValue[this.children])
-					this.$refs.treeList.classList.toggle('collapse')
+				// if (this.modelValue[this.children])
+				// 	this.$refs.treeList.classList.toggle('collapse')
+				this.isCollapsed = !this.isCollapsed
 			},
 		}
 	}
@@ -141,6 +145,8 @@
 		width: 100%;
 		box-sizing: border-box;
 		user-select: none;
+		position: relative;
+		padding-right: 20px;
 	}
 	.tree-item-text {
 		flex: 1;
@@ -156,9 +162,30 @@
 	.tree-list {
 		display: none;
 		padding: 0px 22px;
+		animation: fadeInRight 0.4s ease-in-out;
 	}
 	.collapse {
 		display: block;
 	}
 
+	.chevron-icon {
+		height: 25px;
+		transition: transform 0.4s;
+		position: absolute;
+		right: 0px;
+	}
+
+	.chevron-icon.rotate {
+		transform: rotate(-90deg);
+	}
+
+	@keyframes fadeInRight {
+		from {
+			opacity: 0;
+			transform: translateX(20px);
+		}
+		to {
+			opacity: 1;
+		}
+	}
 </style>
