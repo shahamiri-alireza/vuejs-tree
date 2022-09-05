@@ -1,7 +1,7 @@
 <template>
 	<div class="checkbox" :class="{'checked':state !== 'unchecked'}" :style="{'background-color': state !== 'unchecked' ? settings.checkedColor : settings.unCheckedColor}" @click="checkboxClicked">
-		<img v-show="state === 'checked'" src="../assets/icons/checked.svg" alt="">
-		<img v-show="state === 'halfChecked'" src="../assets/icons/halfChecked.svg" alt="">
+		<img class="checkbox-icon" v-show="state === 'checked'" src="../assets/icons/checked.svg">
+		<img class="checkbox-icon" v-show="state === 'halfChecked'" src="../assets/icons/halfChecked.svg">
 	</div>
 </template>
 
@@ -72,10 +72,27 @@
 		display: inline-block;
 		margin: 0px 4px;
 		background-color: white;
+		transition: background-color 0.2s ease-in-out;
 	}
 
 	.checkbox img {
 		width: 100%;
 		height: 100%;
 	}
+
+.checkbox-icon{
+	animation: checbkoxAnimation 0.2s ease-in-out forwards;
+}
+
+
+@keyframes checbkoxAnimation{
+			from {
+			opacity: 0;
+			transform: rotate(20deg);
+		}
+		to {
+			opacity: 1;
+			transform: rotate(0deg);
+		}
+}
 </style>
