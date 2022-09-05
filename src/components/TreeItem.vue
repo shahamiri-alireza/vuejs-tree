@@ -65,23 +65,35 @@
 			}
 		},
 		methods: {
+			countDifferentStates(item, state) {
+				let count = 0
+				if (item[this.state].isChecked !== state) {
+					count++
+				}
+
+				if (item[this.children]) {
+					for (let i = 0; i < item[this.children].length; i++) {
+						count += this.countDifferentStates(item[this.children][i], state)
+					}
+				}
+
+				return count
+			},
 			treeItemDataChanged(val) {
 				this.halfChecked = false
 				if (this.modelValue[this.children] && this.modelValue[this.children].length > 0) {
 					let dataState = true
 					const halfCheckedOrigin = this.modelValue[this.children][0][this.state].isChecked
 					let valDifferenceCount = 0
+
 					for (let i = 0; i < this.modelValue[this.children].length; i++) {
 						if (this.modelValue[this.children][i][this.state].isChecked === false) {
 							dataState = false
 						}
 
+						valDifferenceCount += this.countDifferentStates(this.modelValue[this.children][i], halfCheckedOrigin)
 
-						if (val[this.state].isChecked !== this.modelValue[this.children][i][this.state].isChecked) {
-							valDifferenceCount++
-						}
-
-						if (this.modelValue[this.children][i][this.state].isChecked !== halfCheckedOrigin || valDifferenceCount > 1) {
+						if (this.modelValue[this.children][i][this.state].isChecked !== halfCheckedOrigin || valDifferenceCount > 0) {
 							this.halfChecked = true
 						}
 					}
