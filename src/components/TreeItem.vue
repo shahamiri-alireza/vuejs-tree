@@ -6,7 +6,7 @@
 			<span class="tree-item-text" @click="toggleCollapse">{{ modelValue[this.text] }}</span>
 		</div>
 		<ul class="tree-list" :class="{'collapse': isCollapsed}" v-if="modelValue[this.children]" ref="treeList">
-			<TreeItem v-for="item in modelValue[this.children]" :key="item[this.text]" :checkboxOptions="checkboxOptions" :fields="this.fields" :modelValue="item" @update:modelValue="val => treeItemDataChanged(val)" />
+			<TreeItem v-for="item in modelValue[this.children]" :key="item[this.text]" :checkboxOptions="checkboxOptions" :fields="this.fields" :modelValue="item" @update:modelValue="val => treeItemDataChanged(val)" ref="treeChild" />
 		</ul>
 	</li>
 </template>
@@ -95,7 +95,24 @@
 				this.emit(val)
 
 			},
+
+			changeHalfState(state = false) {
+				this.halfChecked = state
+			},
+
+			disableAllChildrenHalfStates() {
+				this.changeHalfState(false)
+
+				if (this.$refs.treeChild) {
+					for (var i = 0; i < this.$refs.treeChild.length; i++) {
+						this.$refs.treeChild[i].disableAllChildrenHalfStates()
+					}
+				}
+			},
+
 			checkboxStateChanged(val) {
+
+				this.disableAllChildrenHalfStates()
 				this.halfChecked = false
 				let clonedData = this.modelValue
 
