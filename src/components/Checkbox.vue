@@ -14,6 +14,7 @@
 			options: {},
 			isHalf: { default: false, type: Boolean }
 		},
+		emits: ['update:modelValue', 'click'],
 		data() {
 			return {
 				settings: {
@@ -26,6 +27,7 @@
 		watch: {
 			modelValue: {
 				immediate: true,
+				deep: true,
 				handler(val) {
 					this.state = val
 				}
@@ -57,15 +59,16 @@
 				}
 
 				this.$emit('update:modelValue', this.state === 'checked' ? true : false)
+				this.$emit('click')
 			}
 		}
 	}
 </script>
 
-<style>
+<style scoped>
 	.checkbox {
-		width: 20px;
-		height: 20px;
+		width: 25px;
+		height: 25px;
 		border: 1px solid #dadada;
 		border-radius: 4px;
 		padding: 2px;
@@ -80,13 +83,12 @@
 		height: 100%;
 	}
 
-.checkbox-icon{
-	animation: checbkoxAnimation 0.2s ease-in-out forwards;
-}
+	.checkbox-icon {
+		animation: checbkoxAnimation 0.2s ease-in-out forwards;
+	}
 
-
-@keyframes checbkoxAnimation{
-			from {
+	@keyframes checbkoxAnimation {
+		from {
 			opacity: 0;
 			transform: rotate(20deg);
 		}
@@ -94,5 +96,5 @@
 			opacity: 1;
 			transform: rotate(0deg);
 		}
-}
+	}
 </style>
