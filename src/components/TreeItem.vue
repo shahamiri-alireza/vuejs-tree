@@ -1,12 +1,12 @@
 <template>
-	<li class="tree-item">
+	<li class="tree-item" v-if="modelValue[this.state].visible !== false">
 		<div class="tree-item-content">
 			<img @click="toggleCollapse" v-if="modelValue[this.children]" class="chevron-icon" :class="{'rotate': isCollapsed}" src="../assets/icons/chevron.svg" alt="">
-			<Checkbox :options="checkboxOptions" class="tree-item-checkbox" :modelValue="checkboxState" @update:modelValue="val => checkboxStateChanged(val)" />
+			<Checkbox @click="checkboxClicked" :options="checkboxOptions" class="tree-item-checkbox" :modelValue="checkboxState" @update:modelValue="val => checkboxStateChanged(val)" />
 			<span class="tree-item-text" @click="toggleCollapse">{{ modelValue[this.text] }}</span>
 		</div>
 		<ul class="tree-list" :class="{'collapse': isCollapsed}" v-if="modelValue[this.children]" ref="treeList">
-			<TreeItem v-for="item in modelValue[this.children]" :key="item[this.text]" :checkboxOptions="checkboxOptions" :fields="this.fields" :modelValue="item" @update:modelValue="val => treeItemDataChanged(val)" ref="treeChild" />
+			<TreeItem v-for="item in modelValue[this.children]" :key="item[this.text]" :checkboxOptions="checkboxOptions" :fields="this.fields" :modelValue="item" @update:modelValue="val => treeItemDataChanged(val)" @change="val => $emit('change', val)" ref="treeChild" />
 		</ul>
 	</li>
 </template>
@@ -22,6 +22,7 @@
 			fields: { type: Object },
 			checkboxOptions: {}
 		},
+		emits: ['update:modelValue', 'change'],
 		data() {
 			return {
 				halfChecked: false,
@@ -65,6 +66,24 @@
 			}
 		},
 		methods: {
+			getLastLevelChildsFromThisSection() {
+				let lastLevelItems = []
+
+				const getComputeds = (item) => {
+					if (item[this.children]?.length) {
+						item[this.children].forEach(child => getComputeds(child))
+					} else {
+						lastLevelItems.push(item)
+					}
+				}
+
+					getComputeds(this.modelValue)
+
+				return lastLevelItems
+			},
+			checkboxClicked() {
+				this.$emit('change',this.getLastLevelChildsFromThisSection())
+			},
 			countDifferentStates(item, state) {
 				let count = 0
 				if (item[this.state].isChecked !== state) {
@@ -158,13 +177,14 @@
 	}
 </script>
 
-<style>
+<style scoped>
 	.tree-item {
 		white-space: nowrap;
 		display: flex;
 		flex-direction: column;
 		position: relative;
 		box-sizing: border-box;
+		padding: 8px 0px;
 	}
 
 	.tree-item-content {
@@ -190,7 +210,7 @@
 
 	.tree-list {
 		display: none;
-		padding: 0px 22px;
+		padding: 0px 30px;
 		animation: fadeInRight 0.4s ease-in-out;
 	}
 	.collapse {
