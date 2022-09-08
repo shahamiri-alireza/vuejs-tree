@@ -1,17 +1,18 @@
 <template>
-	<li class="tree-item" v-if="modelValue[this.state].visible !== false">
+	<li class="tree-item">
 		<div class="tree-item-content">
 			<img @click="toggleCollapse" v-if="modelValue[this.children]" class="chevron-icon" :class="{'rotate': isCollapsed}" src="../assets/icons/chevron.svg" alt="">
 			<Checkbox @click="checkboxClicked" :options="checkboxOptions" class="tree-item-checkbox" :modelValue="checkboxState" @update:modelValue="val => checkboxStateChanged(val)" />
 			<span class="tree-item-text" @click="toggleCollapse">{{ modelValue[this.text] }}</span>
 		</div>
 		<ul class="tree-list" :class="{'collapse': isCollapsed}" v-if="modelValue[this.children]" ref="treeList">
-			<TreeItem v-for="item in modelValue[this.children]" :key="item[this.text]" :checkboxOptions="checkboxOptions" :fields="this.fields" :modelValue="item" @update:modelValue="val => treeItemDataChanged(val)" @change="val => $emit('change', val)" ref="treeChild" />
+			<TreeItem v-for="item in modelValue[this.children]" :level="level + 1" :key="item[this.text]" :checkboxOptions="checkboxOptions" :fields="this.fields" :modelValue="item" @update:modelValue="val => treeItemDataChanged(val)" @change="val => $emit('change', val)" ref="treeChild" />
 		</ul>
 	</li>
 </template>
 <script>
 	import Checkbox from './Checkbox.vue'
+	import _ from 'lodash'
 	export default {
 		name: 'TreeItem',
 		components: {
@@ -19,8 +20,9 @@
 		},
 		props: {
 			modelValue: {},
-			fields: { type: Object },
-			checkboxOptions: {}
+			fields: { type: [Object, Array] },
+			checkboxOptions: {},
+			level: { type: Number }
 		},
 		emits: ['update:modelValue', 'change'],
 		data() {
@@ -31,12 +33,18 @@
 		},
 		computed: {
 			children() {
+				if (_.isArray(this.fields))
+					return this.fields[this.level] ? this.fields[this.level].children : this.fields[0].children
 				return this.fields.children
 			},
 			text() {
+				if (_.isArray(this.fields))
+					return this.fields[this.level] ? this.fields[this.level].text : this.fields[0].text
 				return this.fields.text
 			},
 			state() {
+				if (_.isArray(this.fields))
+					return this.fields[this.level] ? this.fields[this.level].state : this.fields[0].state
 				return this.fields.state
 			},
 			checkboxState() {
@@ -54,6 +62,7 @@
 			},
 		},
 		created() {
+
 			this.halfChecked = false
 			if (this.modelValue[this.children]?.length > 0) {
 
@@ -77,12 +86,12 @@
 					}
 				}
 
-					getComputeds(this.modelValue)
+				getComputeds(this.modelValue)
 
 				return lastLevelItems
 			},
 			checkboxClicked() {
-				this.$emit('change',this.getLastLevelChildsFromThisSection())
+				this.$emit('change', this.getLastLevelChildsFromThisSection())
 			},
 			countDifferentStates(item, state) {
 				let count = 0

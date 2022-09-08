@@ -1,6 +1,6 @@
 <template>
 	<ul class="main-tree" :dir="settings.treeDirection">
-		<TreeItem v-for="item in modelValue" :checkboxOptions="settings.checkboxOptions" :fields="settings.customFields" :key="item[settings.customFields.text]" :modelValue="item" @update:modelValue="item" @change="val => emitChanges(val)" />
+		<TreeItem v-for="item in modelValue" :level="0" :checkboxOptions="settings.checkboxOptions" :fields="settings.customFields" :key="item[settings.customFields.text]" :modelValue="item" @update:modelValue="item" @change="val => emitChanges(val)" />
 	</ul>
 </template>
 
@@ -37,24 +37,34 @@
 			treeInit() {
 				this.addOrCheckStateFieldtoData(this.modelValue, false)
 			},
-			addOrCheckStateFieldtoData(dataList, parentState = false) {
+			addOrCheckStateFieldtoData(dataList, parentState = false, level = 0) {
+				const isCustomFieldArray = _.isArray(this.settings.customFields)
+
+				let fields
+				if (isCustomFieldArray)
+					fields = this.settings.customFields[level] ? this.settings.customFields[level] : this.settings.customFields[0]
+
+				else
+					fields = this.settings.customFields
+
+
 				for (let i = 0; i < dataList.length; i++) {
 					if (parentState == true) {
-						dataList[i][this.settings.customFields.state] = { isChecked: true }
+						dataList[i][fields.state] = { isChecked: true }
 					}
-					else if (!dataList[i][this.settings.customFields.state]) {
-						dataList[i][this.settings.customFields.state] = { isChecked: false }
+					else if (!dataList[i][fields.state]) {
+						dataList[i][fields.state] = { isChecked: false }
 					}
 					else {
-						if (dataList[i][this.settings.customFields.children]) {
-							const chilrenState = this.getLastLevelItems(dataList[i][this.settings.customFields.children]).every(child => child[this.settings.customFields.state].isChecked === true)
-							dataList[i][this.settings.customFields.state] = { isChecked: chilrenState }
+						if (dataList[i][fields.children]) {
+							const chilrenState = this.getLastLevelItems(dataList[i][fields.children]).every(child => child[this.settings.customFields.state].isChecked === true)
+							dataList[i][fields.state] = { isChecked: chilrenState }
 						}
 					}
 
-
-					if (dataList[i][this.settings.customFields.children]?.length > 0)
-						this.addOrCheckStateFieldtoData(dataList[i][this.settings.customFields.children], dataList[i][this.settings.customFields.state].isChecked)
+					let nextLevel = level + 1
+					if (dataList[i][fields.children]?.length > 0)
+						this.addOrCheckStateFieldtoData(dataList[i][fields.children], dataList[i][fields.state].isChecked, nextLevel)
 				}
 			},
 			getLastLevelItems(items) {
@@ -105,6 +115,23 @@
 						children: 'children',
 						state: 'state'
 					},
+					// customFields: [
+					// 	{
+					// 		text: 'text',
+					// 		children: 'children',
+					// 		state: 'state'
+					// 	},
+					// 	{
+					// 		text: 'esm',
+					// 		children: 'items',
+					// 		state: 'state'
+					// 	},
+					// 	{
+					// 		text: 'matn',
+					// 		children: 'bache',
+					// 		state: 'state'
+					// 	},
+					// ],
 					checkboxOptions: {
 						checkedColor: '#466eb5',
 						unCheckedColor: 'white'
