@@ -1,5 +1,5 @@
 <template>
-	<li class="tree-item">
+	<li class="tree-item"  v-if="modelValue[this.state].visible !== false">
 		<div class="tree-item-content">
 			<img @click="toggleCollapse" v-if="modelValue[this.children]" class="chevron-icon" :class="{'rotate': isCollapsed}" src="../assets/icons/chevron.svg" alt="">
 			<Checkbox @click="checkboxClicked" :options="checkboxOptions" class="tree-item-checkbox" :modelValue="checkboxState" @update:modelValue="val => checkboxStateChanged(val)" />
