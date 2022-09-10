@@ -1,5 +1,5 @@
 <template>
-	<Tree :modelValue="testData2" :options="testOptions" />
+	<Tree :modelValue="testData2" :options="testOptions" ref="tree" />
 	<button @click="test1()">Salam</button>
 </template>
 
@@ -76,7 +76,8 @@
 		},
 		methods: {
 			test1() {
-				console.log(this.testData2)
+				this.$refs.tree.changeItemStateByKeyValue('text', 'لیست اسناد', true)
+				this.$refs.tree.changeItemStateByKeyValue('text', 'صدور سند', true)
 			}
 		},
 	}

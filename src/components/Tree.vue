@@ -1,6 +1,6 @@
 <template>
 	<ul class="main-tree" :dir="settings.treeDirection">
-		<TreeItem v-for="item in modelValue" :level="0" :checkboxOptions="settings.checkboxOptions" :fields="settings.customFields" :key="item[settings.customFields.text]" :modelValue="item" @update:modelValue="item" @change="val => emitChanges(val)" />
+		<TreeItem v-for="item in modelValue" :level="0" :checkboxOptions="settings.checkboxOptions" :fields="settings.customFields" :key="item[settings.customFields.text]" :modelValue="item" @update:modelValue="item" @change="val => emitChanges(val)" ref="treeItem" />
 	</ul>
 </template>
 
@@ -31,13 +31,9 @@
 			this.treeInit()
 		},
 		methods: {
-			emitChanges(val) {
-				this.$emit('change', val)
-			},
-			treeInit() {
-				this.addOrCheckStateFieldtoData(this.modelValue, false)
-			},
-			addOrCheckStateFieldtoData(dataList, parentState = false, level = 0) {
+
+			getField(level) {
+
 				const isCustomFieldArray = _.isArray(this.settings.customFields)
 
 				let fields
@@ -47,6 +43,47 @@
 				else
 					fields = this.settings.customFields
 
+				return fields
+			},
+
+			changeItemStateByKeyValue(key, value, state) {
+
+				var found = false
+
+				const recursiveStateChanger = (treeItems, level = 0) => {
+
+					let fields = this.getField(level)
+
+
+					for (let item of treeItems) {
+						if (item[key] == value) {
+							item[fields.state].isChecked = state
+							found = true
+							break
+						}
+
+						if (item[fields.children]?.length) {
+							recursiveStateChanger(item[fields.children], level + 1)
+							if (found) {
+								break
+							}
+						}
+					}
+
+				}
+
+				recursiveStateChanger(this.modelValue)
+			},
+
+			emitChanges(val) {
+				this.$emit('change', val)
+			},
+			treeInit() {
+				this.addOrCheckStateFieldtoData(this.modelValue, false)
+			},
+			addOrCheckStateFieldtoData(dataList, parentState = false, level = 0) {
+
+				let fields = this.getField(level)
 
 				for (let i = 0; i < dataList.length; i++) {
 					if (parentState == true) {
